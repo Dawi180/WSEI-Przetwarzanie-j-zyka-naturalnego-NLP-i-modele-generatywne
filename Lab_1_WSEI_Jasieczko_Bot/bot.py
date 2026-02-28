@@ -186,7 +186,7 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # --- MAIN ---
 
 if __name__ == '__main__':
-    TOKEN = "8623991920:AAGNOEe3TeJoeSmD2o-oovwR1rl6Hg4KQlw"
+    TOKEN = "Token"
     
     print("Uruchamianie bota...")
     app = ApplicationBuilder().token(TOKEN).build()
