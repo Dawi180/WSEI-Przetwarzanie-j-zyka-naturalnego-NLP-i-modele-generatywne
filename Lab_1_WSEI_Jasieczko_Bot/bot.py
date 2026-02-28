@@ -2,6 +2,7 @@ import os
 import shlex
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from dotenv import load_dotenv
 
 # Importujemy nasze własne moduły
 import data_handler
@@ -186,7 +187,15 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # --- MAIN ---
 
 if __name__ == '__main__':
-    TOKEN = "Token"
+    # Wczytujemy zmienne z pliku .env
+    load_dotenv()
+    
+    # Pobieramy token z ukrytej zmiennej środowiskowej
+    TOKEN = os.getenv("TELEGRAM_TOKEN")
+    
+    # Zabezpieczenie, gdyby plik .env nie istniał lub był pusty
+    if not TOKEN:
+        raise ValueError("Brak tokena! Upewnij się, że masz plik .env z TELEGRAM_TOKEN.")
     
     print("Uruchamianie bota...")
     app = ApplicationBuilder().token(TOKEN).build()
