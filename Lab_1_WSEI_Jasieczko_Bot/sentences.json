@@ -1,0 +1,30 @@
+[
+  {
+    "text": "To był bardzo fajny film.",
+    "class": "pozytywny"
+  },
+  {
+    "text": "Gorąco polecam każdemu.",
+    "class": "pozytywny"
+  },
+  {
+    "text": "Ten system działa strasznie wolno i często się zacina.",
+    "class": "negatywny"
+  },
+  {
+    "text": "Bardzo lubię pisać boty w języku Python",
+    "class": "neutralny"
+  },
+  {
+    "text": "To był bardzo fajny film.",
+    "class": "pozytywny"
+  },
+  {
+    "text": "Gorąco polecam każdemu.",
+    "class": "pozytywny"
+  },
+  {
+    "text": "Bardzo lubię pisać boty w języku Python",
+    "class": "neutralny"
+  }
+]

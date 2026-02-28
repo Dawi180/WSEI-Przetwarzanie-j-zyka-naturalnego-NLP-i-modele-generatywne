@@ -1,0 +1,8 @@
+# Ignoruj wirtualne środowiska w każdym podfolderze
+venv/
+env/
+.env
+
+# Ignoruj pliki tymczasowe Pythona
+__pycache__/
+*.pyc
