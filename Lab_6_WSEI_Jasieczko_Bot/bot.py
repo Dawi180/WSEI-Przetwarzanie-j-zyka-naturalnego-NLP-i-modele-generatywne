@@ -3,8 +3,11 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from config import TELEGRAM_TOKEN
 import bot_commands
-from bot_commands import moderate_command, mod_analytics_command, mod_history_command, mod_add_feedback_command
-
+from bot_commands import (
+    moderate_command, mod_analytics_command, mod_history_command, 
+    mod_add_feedback_command, mod_help_command, mod_status_command, 
+    mod_watchlist_command, mod_policy_check_command, mod_train_on_feedback_command
+)
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -29,6 +32,15 @@ def main():
     app.add_handler(CommandHandler("mod_analytics", mod_analytics_command))
     app.add_handler(CommandHandler("mod_history", mod_history_command))
     app.add_handler(CommandHandler("mod_add_feedback", mod_add_feedback_command))
+    app.add_handler(CommandHandler("moderate", moderate_command))
+    app.add_handler(CommandHandler("mod_analytics", mod_analytics_command))
+    app.add_handler(CommandHandler("mod_history", mod_history_command))
+    app.add_handler(CommandHandler("mod_add_feedback", mod_add_feedback_command))
+    app.add_handler(CommandHandler("mod_help", mod_help_command))
+    app.add_handler(CommandHandler("mod_status", mod_status_command))
+    app.add_handler(CommandHandler("mod_watchlist", mod_watchlist_command))
+    app.add_handler(CommandHandler("mod_policy_check", mod_policy_check_command))
+    app.add_handler(CommandHandler("mod_train_on_feedback", mod_train_on_feedback_command))
 
     # --- Rejestracja funkcji z Lab 5 ---
     app.add_handler(CommandHandler("agent", bot_commands.agent_command))

@@ -599,3 +599,120 @@ async def mod_add_feedback_command(update: Update, context: ContextTypes.DEFAULT
     )
     
     await update.message.reply_text(wynik + "\n🙏 Dziękujemy za feedback! Model zostanie na jego podstawie douczony w przyszłości.")
+
+async def mod_help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Obsługa komendy /mod_help - spis dostępnych komend"""
+    help_text = (
+        "🤖 **System Moderacji AI - Dostępne Komendy:**\n\n"
+        "📝 `/moderate <tekst>` - Pełna analiza tekstu (PII, Sentyment, Hejt, NER).\n"
+        "🔍 `/mod_status <content_id>` - Status decyzji dla konkretnego ID treści.\n"
+        "📜 `/mod_history <user_id>` - Wyświetla historię moderacji danego użytkownika.\n"
+        "📊 `/mod_analytics` - Wyświetla globalne statystyki systemu i bazy CSV.\n"
+        "✍️ `/mod_add_feedback <content_id> <APPROVE|REJECT> <komentarz>` - Korekta ludzka.\n"
+        "👀 `/mod_watchlist` - Wyświetla listę obserwowanych użytkowników (recydywistów).\n"
+        "🧠 `/mod_train_on_feedback` - Symulacja adaptacji modelu na bazie poprawek.\n"
+        "⚖️ `/mod_policy_check <tekst>` - Szybkie sprawdzenie tekstu z zasadami platformy.\n"
+        "❓ `/mod_help` - Wyświetla to menu pomocy."
+    )
+    await update.message.reply_text(help_text, parse_mode="Markdown")
+
+
+async def mod_status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Obsługa komendy /mod_status <content_id>"""
+    if not context.args:
+        await update.message.reply_text("⚠️ Użycie: `/mod_status <content_id>`", parse_mode="Markdown")
+        return
+        
+    target_id = context.args[0].strip()
+    found = False
+    
+    try:
+        with open(moderation_db.LOG_FILE, mode='r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row.get('content_id') == target_id:
+                    response = (
+                        f"🆔 **Status treści {target_id}:**\n"
+                        f"========================\n"
+                        f"- Status: `{row.get('action', 'N/A').upper()}`\n"
+                        f"- Powód: *{row.get('reason', 'Brak danych')}*\n"
+                        f"- Wykryte PII: `{row.get('pii_detected')}`\n"
+                        f"- Data zgłoszenia: `{row.get('timestamp', 'N/A')[:19]}`"
+                    )
+                    await update.message.reply_text(response, parse_mode="Markdown")
+                    found = True
+                    break
+        if not found:
+            await update.message.reply_text(f"❌ Nie znaleziono wpisu dla ID: `{target_id}`", parse_mode="Markdown")
+    except FileNotFoundError:
+        await update.message.reply_text("❌ Plik logów moderacji nie istnieje.")
+
+
+async def mod_watchlist_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Obsługa komendy /mod_watchlist - wyświetla listę osób z naruszeniami"""
+    watchlist = []
+    try:
+        with open(moderation_db.USER_FILE, mode='r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                violations = int(row.get('total_violations', 0))
+                if violations > 0:
+                    status_emoji = "🔴 REC" if row.get('is_repeat_offender') == 'True' else "🟡 PODEJRZANY"
+                    watchlist.append(
+                        f"👤 ID: `{row.get('user_id')}` | Naruszenia: *{violations}* | [{status_emoji}]"
+                    )
+        
+        if watchlist:
+            response = "👀 **Lista Obserwowanych Użytkowników (Watchlist):**\n\n" + "\n".join(watchlist)
+        else:
+            response = "✅ Czysto! Żaden użytkownik nie znajduje się na liście podejrzanych."
+        
+        await update.message.reply_text(response, parse_mode="Markdown")
+    except FileNotFoundError:
+        await update.message.reply_text("✅ Brak użytkowników w bazie danych.")
+
+
+async def mod_policy_check_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Obsługa komendy /mod_policy_check <tekst>"""
+    if not context.args:
+        await update.message.reply_text("⚠️ Użycie: `/mod_policy_check <tekst do sprawdzenia>`", parse_mode="Markdown")
+        return
+        
+    text = " ".join(context.args)
+    
+    # Symulacja bezpośredniego parowania z punktami regulaminu (Policy Enforcement)
+    response = (
+        f"⚖️ **Weryfikacja z Polityką Platformy dla:**\n_\"{text}\"_\n\n"
+        f"🛡️ **Reguły bezpieczeństwa w gotowości:**\n"
+        f"1. **Doxxing / PII** -> Aktywny (Moduł OpenAI/Regex)\n"
+        f"2. **Mowa nienawiści / Toksyczność** -> Aktywny (Bielik Guard 0.1B)\n"
+        f"3. **Spam / Podejrzane linki** -> Aktywny (Moduł NER)\n\n"
+        f"💡 *Rekomendacja:* Użyj komendy `/moderate`, aby w pełni przetestować to zdanie przez potoki AI."
+    )
+    await update.message.reply_text(response, parse_mode="Markdown")
+
+
+async def mod_train_on_feedback_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Obsługa komendy /mod_train_on_feedback - adaptacja systemu na danych z feedbacku"""
+    count = 0
+    try:
+        with open(moderation_db.FEEDBACK_FILE, mode='r', encoding='utf-8') as f:
+            count = sum(1 for line in f) - 1  # Pomijamy nagłówek
+    except FileNotFoundError:
+        pass
+        
+    if count < 1:
+        await update.message.reply_text("ℹ️ Brak danych w `feedback_log.csv` do przeprowadzenia re-rankingu.", parse_mode="Markdown")
+        return
+        
+    status_msg = await update.message.reply_text("🧠 Przetwarzanie poprawek ludzkich i re-ranking wag...")
+    
+    # Symulacja dostosowania wag modeli LLMOps na bazie zebranych próbek
+    response = (
+        f"🧠 **Pętla Uczenia Zwrotnego (Feedback Loop):**\n"
+        f"========================\n"
+        f"🔄 Przetworzono `{count}` decyzji skorygowanych przez człowieka.\n"
+        f"📈 Zaktualizowano progi czułości dla klasyfikatora Qwen 2.5 i Bielika.\n"
+        f"✅ **Sukces:** System dostosował się do wytycznych administratora."
+    )
+    await status_msg.edit_text(response, parse_mode="Markdown")

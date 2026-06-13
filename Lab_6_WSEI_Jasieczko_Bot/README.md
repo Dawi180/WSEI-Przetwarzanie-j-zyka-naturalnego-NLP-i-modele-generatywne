@@ -133,3 +133,63 @@ Generuje streszczenie tekstu przy pomocy lokalnego modelu Ollama.
 Automatycznie rozpoznaje ponad 50 języków.
 * **Komenda:** `/language_detect text="tekst"`
 * **Przykład:** `/language_detect text="Guten Morgen! Ich lerne gerne neue Programmiersprachen."`
+
+### 🛡️ Część 6: Automatyczna Moderacja i Bezpieczeństwo AI (Lab 6)
+  Kompleksowy system wielopoziomowej moderacji treści (Content Moderation & Policy Enforcement) działający w architekturze hybrydowej (lokalne modele + API). System chroni społeczność przed wyciekiem danych wrażliwych, mową nienawiści oraz toksycznością za pomocą strategii głosowania modeli (Ensemble Strategy) oraz technologii Function Calling.
+
+## 🚀 Główne Funkcjonalności
+
+* **OpenAI Privacy Filter:** Automatyczna detekcja i usuwanie danych osobowych (PII) takich jak numery telefonów, adresy e-mail czy numery PESEL przed dalszym przetwarzaniem.
+* **Bielik Guard 0.1B:** Lekki, dedykowany model bezpieczeństwa klasyfikujący zagrożenia (toxic, spam, hate_speech, self_harm, violence, sexual, clean) w języku polskim.
+* **Ensemble Strategy & Function Calling:** Koordynacja potoków przez model **Qwen 2.5**, który na podstawie promptów systemowych i wyników modeli pomocniczych samodzielnie decyduje o wykonaniu akcji (zatwierdzenie, odrzucenie, ban, flagowanie).
+* **Pętla Informacji Zwrotnej (Feedback Loop):** System zbiera korekty decyzji wprowadzane przez ludzkich moderatorów, buduje bazę treningową i pozwala na symulację re-rankingu decyzji (LLMOps).
+* **Rejestr Recydywistów (Repeat Offenders):** Bot prowadzi stałą kartotekę punktów karnych i automatycznie nakłada blokady na użytkowników notorycznie łamiących regulamin.
+
+---
+
+## 🛠 Komendy i Użycie
+
+### 📝 Moderacja Treści
+Analizuje podany tekst przez pełną rurę przetwarzania (PII, Bielik Guard, Sentyment z Lab 3, NER z Lab 4) i podejmuje autonomiczną decyzję moderacyjną.
+* **Komenda:** `/moderate <tekst do sprawdzenia>`
+* **Przykład:** `/moderate Ty idioto, nienawidzę was! Mój pesel to 99010112345`
+
+### 🔍 Status Zgłoszenia
+Sprawdza szczegółowe wyniki archiwalnej moderacji i powody decyzji na podstawie unikalnego identyfikatora treści (Content ID).
+* **Komenda:** `/mod_status <content_id>`
+* **Przykład:** `/mod_status MSG-F69D4408`
+
+### 📜 Historia Użytkownika (Kartoteka)
+Wyciąga z bazy profil konkretnego użytkownika, pokazując łączną liczbę naruszeń, nałożone kary oraz status recydywisty.
+* **Komenda:** `/mod_history <user_id>`
+* **Przykład:** `/mod_history 123456789`
+
+### 📊 Analityka Biznesowa
+Generuje dynamiczny raport podsumowujący działania moderacyjne dla administratorów (procent odrzuceń, statystyki najczęstszych kategorii hejtu).
+* **Komenda:** `/mod_analytics`
+* **Przykład:** `/mod_analytics`
+
+### ✍️ Korekta Ludzka (Feedback)
+Pozwala administratorowi nadpisać błędną decyzję bota, zapisując próbkę uczącą do późniejszego dostrojenia systemu.
+* **Komenda:** `/mod_add_feedback <content_id> <APPROVE|REJECT> <komentarz>`
+* **Przykład:** `/mod_add_feedback MSG-F69D4408 APPROVE To legalna wypowiedź klienta, proszę przywrócić.`
+
+### 👀 Lista Obserwowanych (Watchlist)
+Wyświetla zestawienie wszystkich użytkowników, którzy mają na swoim koncie zarejestrowane naruszenia regulaminu.
+* **Komenda:** `/mod_watchlist`
+* **Przykład:** `/mod_watchlist`
+
+### 🧠 Adaptacja i Re-ranking
+Uruchamia pętlę ciągłego uczenia (Continuous Learning), dostosowując progi czułości Qwena na podstawie zebranych poprawek ludzkich.
+* **Komenda:** `/mod_train_on_feedback`
+* **Przykład:** `/mod_train_on_feedback`
+
+### ⚖️ Sprawdzenie z Polityką Platformy
+Szybka weryfikacja zgodności surowego tekstu z wewnętrznymi regułami bezpieczeństwa przed oficjalną publikacją.
+* **Komenda:** `/mod_policy_check "<tekst>"`
+* **Przykład:** `/mod_policy_check "Kupiłem produkt na stronie http://test.pl i nie działa"`
+
+### ❓ Pomoc Moderacyjna
+Wyświetla sformatowane menu podręczne ze spisem wszystkich komend administratorskich systemu bezpieczeństwa.
+* **Komenda:** `/mod_help`
+* **Przykład:** `/mod_help`

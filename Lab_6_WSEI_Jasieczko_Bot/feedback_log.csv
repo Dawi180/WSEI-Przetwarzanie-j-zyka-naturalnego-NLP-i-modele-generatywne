@@ -1,1 +1,2 @@
 content_id,original_bot_decision,moderator_override,text_sample,category,confidence_before,confidence_after,timestamp
+MSG-A33C8E03,BOT_DECISION,APPROVE,"To jest bezpieczny komentarz klienta, proszę przywrócić.",manual_correction,1.0,1.0,2026-06-13T16:25:37.831825
