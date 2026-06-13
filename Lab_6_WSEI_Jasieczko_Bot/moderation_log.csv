@@ -1,0 +1,10 @@
+timestamp,content_id,user_id,text,model_bielik_decision,model_bielik_score,model_qwen_decision,model_qwen_score,pii_detected,sentiment,action,moderator_override,reason,appeal_filed
+2026-06-05T12:38:44.887082,MSG-F69D4408,User777,"Ten produkt to totalne śmieci, nienawidzę was. Mój pesel to 123456789.",clean,1.0,rejected,0.95,True,unknown,REJECT,False,Zawiera PII (pesel) i hejt.,False
+2026-06-05T13:27:46.371856,MSG-C77ACDD7,8788402130,Jestem bardzo zadowolony z waszych usług!,clean,1.0,approved,0.95,False,unknown,APPROVE,False,,False
+2026-06-05T13:28:04.093129,MSG-0D3EAC9D,8788402130,"Ty idioto, podaję mój pesel 99010112345",clean,1.0,rejected,0.95,True,unknown,REJECT,False,Zawiera PII (PESEL),False
+2026-06-05T13:29:36.135814,MSG-1706CF77,8788402130,"Ty idioto, podaję mój pesel 99010112345",clean,1.0,rejected,0.95,True,unknown,REJECT,False,Zawiera PII (PESEL),False
+2026-06-05T13:35:03.752647,MSG-7243C12E,8788402130,"Ty idioto, podaję mój pesel 99010112345",hate,0.1904250532388687,rejected,0.95,True,unknown,REJECT,False,Treść zawiera PII i obraża odbiorcę.,False
+2026-06-05T13:42:38.960805,MSG-283CC3AF,8788402130,"Ty idioto, podaję mój pesel 99010112345",hate,0.1904250532388687,rejected,0.95,True,unknown,REJECT,False,Zawiera PII (PESEL),False
+2026-06-05T13:51:43.684558,MSG-C78D41E9,8788402130,"Kupiłem ten wasz program na stronie http://oszusci.pl i jestem potwornie rozczarowany, to nie działa!",crime,0.1201639249920845,rejected,0.95,False,negative,REJECT,False,Link do podejrzanej strony i negatywny sentyment,False
+2026-06-05T13:55:12.036745,MSG-952B6E83,8788402130,Kupiłem ten produkt i jestem rozczarowany,hate,0.04028709605336189,approved,0.95,False,negative,APPROVE,False,,False
+2026-06-05T13:58:02.815276,MSG-F3ABFD9A,8788402130,Ci politykanci to wszystko złodzieje! Wszyscy!!,vulgar,0.11340033262968063,rejected,0.95,False,negative,REJECT,False,Hejt i obraźliwe wyrażenia wobec grupy ludzi (polityków),False

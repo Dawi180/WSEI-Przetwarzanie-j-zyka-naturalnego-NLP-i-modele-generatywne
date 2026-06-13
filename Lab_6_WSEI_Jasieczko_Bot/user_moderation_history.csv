@@ -1,0 +1,2 @@
+user_id,username,total_violations,last_violation_date,categories,risk_score,is_repeat_offender,shadow_bans,appeals_filed
+8788402130,User_8788402130,3,2026-06-05T13:58:02.817280,hate;crime;vulgar,0.1904250532388687,True,0,0
